@@ -125,41 +125,6 @@ This is a **pure static web app** — no build step, no package manager, no serv
 No npm, no bundler, no framework. The library is loaded from a CDN — for offline use, download it and point the `<script>` tag to the local file.
 
 ---
-
-## 📄 License
-
-This project is licensed under the **MIT License**.
-
-```
-MIT License
-
-Copyright (c) 2025 Tarcísio Allyson
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-### Why MIT?
-
-The only dependency — Lightweight Charts™ — is **Apache 2.0**, which is permissive and fully compatible with MIT. Choosing MIT means anyone can use, modify, and redistribute the project (including commercially), with no obligation to open-source derivative works. The only requirement is keeping the copyright notice.
-
-If you want to **require all forks and derivatives to remain open source**, use **GPL v3** instead — it is also compatible with Apache 2.0 in this direction.
-
----
 ## 🙏 Acknowledgements
 
 Chart rendering powered by [Lightweight Charts™](https://github.com/tradingview/lightweight-charts) © TradingView, Inc. (Apache 2.0).
