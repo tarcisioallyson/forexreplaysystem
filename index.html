@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forex Replay</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://unpkg.com/lightweight-charts@4.2.1/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+
+    <div class="toolbar">
+        <div class="toolbar-group">
+            <label data-i18n="toolbar.csvLabel">CSV MT5:</label>
+            <input type="file" id="csv-file" accept=".csv, .txt">
+            <select id="csv-tz" data-i18n-title="tip.csvTz">
+                <option value="-12">UTC -12</option>
+                <option value="-11">UTC -11</option>
+                <option value="-10">UTC -10 (Havaí)</option>
+                <option value="-9">UTC -9 (Alasca)</option>
+                <option value="-8">UTC -8 (Los Angeles)</option>
+                <option value="-7">UTC -7</option>
+                <option value="-6">UTC -6 (Chicago)</option>
+                <option value="-5">UTC -5 (NY Inverno / EST)</option>
+                <option value="-4">UTC -4 (NY Verão / EDT)</option>
+                <option value="-3">UTC -3 (Brasil / BRT)</option>
+                <option value="-2">UTC -2</option>
+                <option value="-1">UTC -1</option>
+                <option value="0">UTC 0 (Londres Inverno / GMT)</option>
+                <option value="1">UTC +1 (Londres Verão / Europa)</option>
+                <option value="2" selected>UTC +2 (MT5 Inverno / EET)</option>
+                <option value="3">UTC +3 (MT5 Verão / Moscou)</option>
+                <option value="4">UTC +4 (Dubai)</option>
+                <option value="5">UTC +5</option>
+                <option value="6">UTC +6</option>
+                <option value="7">UTC +7</option>
+                <option value="8">UTC +8 (Singapura / HK)</option>
+                <option value="9">UTC +9 (Tóquio)</option>
+                <option value="10">UTC +10 (Sydney Inverno)</option>
+                <option value="11">UTC +11 (Sydney Verão)</option>
+                <option value="12">UTC +12</option>
+            </select>
+        </div>
+
+        <div class="toolbar-group">
+            <label data-i18n="toolbar.start">Início:</label><input type="date" id="start-date">
+            <label data-i18n="toolbar.end">Fim:</label><input type="date" id="end-date">
+        </div>
+
+        <div class="toolbar-group">
+            <label data-i18n="toolbar.displayIn">Exibir em:</label>
+            <select id="display-tz" data-i18n-title="tip.displayTz">
+                <option value="-12">UTC -12</option>
+                <option value="-11">UTC -11</option>
+                <option value="-10">UTC -10 (Havaí)</option>
+                <option value="-9">UTC -9 (Alasca)</option>
+                <option value="-8">UTC -8 (Los Angeles)</option>
+                <option value="-7">UTC -7</option>
+                <option value="-6">UTC -6 (Chicago)</option>
+                <option value="-5">UTC -5 (NY Inverno / EST)</option>
+                <option value="-4">UTC -4 (NY Verão / EDT)</option>
+                <option value="-3" selected>UTC -3 (Brasil / BRT)</option>
+                <option value="-2">UTC -2</option>
+                <option value="-1">UTC -1</option>
+                <option value="0">UTC 0 (Londres Inverno / GMT)</option>
+                <option value="1">UTC +1 (Londres Verão / Europa)</option>
+                <option value="2">UTC +2 (MT5 Inverno / EET)</option>
+                <option value="3">UTC +3 (MT5 Verão / Moscou)</option>
+                <option value="4">UTC +4 (Dubai)</option>
+                <option value="5">UTC +5</option>
+                <option value="6">UTC +6</option>
+                <option value="7">UTC +7</option>
+                <option value="8">UTC +8 (Singapura / HK)</option>
+                <option value="9">UTC +9 (Tóquio)</option>
+                <option value="10">UTC +10 (Sydney Inverno)</option>
+                <option value="11">UTC +11 (Sydney Verão)</option>
+                <option value="12">UTC +12</option>
+            </select>
+
+            <label style="margin-left:10px;" data-i18n="toolbar.timeframe">Timeframe:</label>
+            <select id="timeframe">
+                <option value="1">1 Min</option>
+                <option value="2">2 Min</option>
+                <option value="3">3 Min</option>
+                <option value="5">5 Min</option>
+                <option value="10">10 Min</option>
+                <option value="15">15 Min</option>
+                <option value="30">30 Min</option>
+                <option value="45">45 Min</option>
+                <option value="60">1 H</option>
+                <option value="120">2 H</option>
+                <option value="180">3 H</option>
+                <option value="240">4 H</option>
+                <option value="1440">Daily</option>
+            </select>
+        </div>
+
+        <div class="toolbar-group">
+            <button id="btn-load"       data-i18n="toolbar.load">Carregar</button>
+            <button id="btn-play"       data-i18n="toolbar.play"  disabled>▶ Play</button>
+            <button id="btn-pause"      data-i18n="toolbar.pause" class="pause" disabled>⏸ Pause</button>
+            <button id="btn-step"       data-i18n="toolbar.step"  class="step"  disabled>⏭ +1 Barra</button>
+            <button id="btn-zoom-in"    data-i18n-title="tip.zoomIn">🔍+</button>
+            <button id="btn-zoom-out"   data-i18n-title="tip.zoomOut">🔍-</button>
+            <button id="btn-zoom-reset" data-i18n="toolbar.zoomReset" data-i18n-title="tip.zoomReset" class="tool-btn">🔍 Tudo</button>
+            <select id="speed">
+                <option value="1000">1s</option>
+                <option value="250">0.25s</option>
+                <option value="50">50ms</option>
+                <option value="10">10ms</option>
+            </select>
+        </div>
+
+        <div class="toolbar-group">
+            <button id="btn-magnet" data-i18n="toolbar.magnet" data-i18n-title="tip.magnet" class="tool-btn">🧲 Magneto</button>
+            <button id="btn-hline"  data-i18n="toolbar.hline"  data-i18n-title="tip.hline"  class="tool-btn">➖ Linha</button>
+            <button id="btn-hray"   data-i18n="toolbar.hray"   data-i18n-title="tip.hray"   class="tool-btn">⇥ Raio</button>
+            <button id="btn-vline"  data-i18n="toolbar.vline"  data-i18n-title="tip.vline"  class="tool-btn">│ Vert</button>
+            <button id="btn-trend"  data-i18n="toolbar.trend"  data-i18n-title="tip.trend"  class="tool-btn">📏 Tend</button>
+            <button id="btn-rect"   data-i18n="toolbar.rect"   data-i18n-title="tip.rect"   class="tool-btn">🔲 Rect</button>
+            <button id="btn-fibo"   data-i18n="toolbar.fibo"   data-i18n-title="tip.fibo"   class="tool-btn">📐 Fibo</button>
+            <button id="btn-text"   data-i18n="toolbar.text"   data-i18n-title="tip.text"   class="tool-btn">🔤 Texto</button>
+            <button id="btn-eraser" data-i18n="toolbar.eraser" data-i18n-title="tip.eraser" class="tool-btn">🧽 Borracha</button>
+            <button id="btn-clear"  data-i18n="toolbar.clear"  data-i18n-title="tip.clear"  class="tool-btn">🗑️ Limpar</button>
+            <button id="btn-grid"   data-i18n="toolbar.grid"   data-i18n-title="tip.grid"   class="tool-btn active">🌐 Grade</button>
+        </div>
+
+        <div class="toolbar-group" style="border-right:none;">
+            <button id="btn-settings" data-i18n-title="tip.settings" class="tool-btn settings-btn">⚙️</button>
+        </div>
+
+        <div class="info-panel" id="status-text" data-i18n="status.waiting">Aguardando CSV...</div>
+    </div>
+
+    <!-- Layout Principal -->
+    <div class="main-layout">
+        <div id="chart-container"></div>
+
+        <!-- PAINEL DE TRADING -->
+        <div id="trading-panel">
+            <div class="tp-header" data-i18n="trading.title">MÓDULO DE TRADING</div>
+
+            <div class="tp-account">
+                <div><span data-i18n="trading.balance">Saldo:</span> <span id="val-balance">$10000.00</span></div>
+                <div><span data-i18n="trading.equity">Líquido:</span> <span id="val-equity">$10000.00</span></div>
+                <div><span data-i18n="trading.floatingPnl">Lucro Flutuante:</span> <span id="val-pnl" class="neutral">$0.00</span></div>
+            </div>
+
+            <div class="tp-group">
+                <label data-i18n="trading.lot">Volume (Lote):</label>
+                <input type="number" id="trade-lot" step="0.01" min="0.01" value="1.00">
+            </div>
+
+            <div class="tp-group">
+                <label data-i18n="trading.ocoTargets">Alvos Automáticos (OCO):</label>
+                <div class="oco-inputs">
+                    <div class="oco-field">
+                        <span class="oco-label negative" data-i18n="trading.sl">Stop Loss</span>
+                        <input type="number" id="oco-sl" placeholder="Pts" data-i18n-title="trading.slPts">
+                    </div>
+                    <div class="oco-field">
+                        <span class="oco-label positive" data-i18n="trading.tp">Take Profit</span>
+                        <input type="number" id="oco-tp" placeholder="Pts" data-i18n-title="trading.tpPts">
+                    </div>
+                </div>
+            </div>
+
+            <div class="tp-buttons">
+                <button class="btn-buy"  id="btn-buy-mkt"   data-i18n="trading.buyMkt">Buy Market</button>
+                <button class="btn-sell" id="btn-sell-mkt"  data-i18n="trading.sellMkt">Sell Market</button>
+            </div>
+            <div class="tp-buttons">
+                <button class="btn-visual" id="btn-visual-buy"  data-i18n="trading.visualBuy">🎯 Buy Visual</button>
+                <button class="btn-visual" id="btn-visual-sell" data-i18n="trading.visualSell">🎯 Sell Visual</button>
+            </div>
+            <div class="tp-buttons" style="margin-top:15px;">
+                <button class="btn-close-all" id="btn-close-all" data-i18n="trading.closeAll">Fechar Tudo / Cancelar</button>
+            </div>
+
+            <div class="tp-list-header" data-i18n="trading.ordersTitle">Ordens & Posições</div>
+            <div id="positions-list" class="tp-list"></div>
+        </div>
+    </div>
+
+    <!-- Scripts (ordem importa: globals → i18n → drawings → trading → settings → app) -->
+    <script src="js/globals.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/drawings.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+</html>
