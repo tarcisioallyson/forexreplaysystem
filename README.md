@@ -1,6 +1,6 @@
 # Forex Replay
 
-A lightweight, high-performance browser-based **Forex market replay tool** for traders who want to practice technical analysis and order execution on historical data — without needing an internet connection or a broker account.
+A lightweight, high-performance **browser-based Forex market replay tool** for traders who want to practice technical analysis and order execution on historical data — with no internet connection, no broker account, and no installation required.
 
 Built entirely with vanilla JavaScript and [Lightweight Charts™](https://github.com/tradingview/lightweight-charts) by TradingView.
 
@@ -9,41 +9,49 @@ Built entirely with vanilla JavaScript and [Lightweight Charts™](https://githu
 ## ✨ Features
 
 ### Replay Engine
-- Loads **M1 CSV files exported from MetaTrader 5** (`.csv` / `.txt`)
-- Rebuilds any timeframe on-the-fly (1m → Daily) from M1 data
-- Play, pause, step bar-by-bar, and adjust replay speed (1s → 10ms)
-- Full timezone support: configure the CSV source timezone and the display timezone independently — timezone changes preserve the current chart view without losing position
+- Loads **M1 CSV files exported from MetaTrader 5** (`.csv` / `.txt`, tab/semicolon/comma separated)
+- Rebuilds any timeframe on-the-fly (1m → Daily) from raw M1 data
+- Play, pause, step bar-by-bar, and adjust replay speed (1s down to 10ms)
+- **Timezone-aware**: configure the CSV source timezone and the display timezone independently — switching timezones preserves the current zoom/scroll position and all drawings
 
 ### Drawing Tools
-| Tool | Description |
-|---|---|
-| ➖ Linha | Full horizontal line (infinite both directions) |
-| ⇥ Raio | Horizontal ray — starts at a point, extends right |
-| │ Vert | Vertical line with date/time label |
-| 📏 Tend | Trend line (ray extending in one direction) |
-| 🔲 Rect | Rectangle with fill |
-| 📐 Fibo | Fibonacci retracement with configurable levels |
-| 🔤 Texto | Free text anchored to price/time |
-| 🧲 Magneto | Snap price to OHLC of nearest candle |
-| 🧽 Borracha | Erase individual objects |
-| 🗑️ Limpar | Clear all drawings |
 
-All objects are **draggable** by their anchor points.
+| Tool | Shortcut | Description |
+|---|---|---|
+| ➖ H-Line | 1 click | Full horizontal line extending in both directions |
+| ⇥ Ray | 1 click | Horizontal ray — starts at anchor point, extends right; price label on the right edge |
+| │ V-Line | 1 click (instant) | Vertical line with a floating date/time label |
+| 📏 Trend | 2 clicks | Trend ray extending in the clicked direction |
+| 🔲 Rect | 2 clicks | Rectangle with configurable fill |
+| 📐 Fibo | 2 clicks | Fibonacci retracement with fully configurable levels |
+| 🔤 Text | 1 click | Free text anchored to a price/time coordinate; double-click to edit |
+| 🧲 Magnet | toggle | Snaps price to the nearest OHLC value |
+| 🧽 Eraser | click | Removes individual objects |
+| 🗑️ Clear | — | Removes all drawings at once |
+
+All objects are **draggable** by their orange anchor points. V-Line and Ray creation is **instant on mousedown** (no click delay).
 
 ### Trading Module (Paper Trading)
-- **Buy / Sell Market** orders
-- **Visual Order Entry** — click directly on the chart to set entry, SL, and TP
-- **Pending Orders** — auto-triggers Buy Stop / Buy Limit / Sell Stop / Sell Limit
+- **Buy / Sell Market** — executes immediately at the current replay price
+- **Visual Order Entry** — click directly on the chart to define entry, SL, and TP in sequence
+- **Pending Orders** — auto-triggers Buy Stop / Buy Limit / Sell Stop / Sell Limit when price reaches the level
 - **Drag SL/TP** lines directly on the chart to adjust after entry
-- Real-time floating P&L and equity tracking
-- Account balance updates on close
+- Real-time floating P&L and equity tracking per bar
+- Account balance updates automatically on close
 
-### Appearance Settings (⚙️)
-All settings are saved automatically to `localStorage`:
-- **Chart** — background color, text/axis color, grid color
-- **Candles** — body and wick colors for bullish and bearish candles
-- **Drawings** — individual color per drawing tool
-- **Fibonacci** — add, remove, and rename retracement levels; supports extension levels (e.g. 1.618, 2.0)
+### Appearance Settings ⚙️
+All settings persist automatically in `localStorage` and are restored on the next visit. Accessible via the gear button in the toolbar.
+
+| Tab | Options |
+|---|---|
+| Chart | Background color, text/axis color, grid color |
+| Candles | Body and wick colors for bullish and bearish candles |
+| Drawings | Individual color per drawing tool |
+| Fibonacci | Add, remove, and rename levels — supports extension levels (e.g. 1.618, 2.0, −0.618) |
+| Language | Switch between **Português (BR)** and **English (US)** |
+
+### Internationalization (i18n)
+The entire interface — toolbar, trading panel, settings panel, alerts, and status messages — is fully translated. The selected language is saved to `localStorage`. Adding a new language requires only a new entry in `i18n.js`.
 
 ---
 
@@ -55,34 +63,56 @@ All settings are saved automatically to `localStorage`:
 ├── css/
 │   └── style.css
 └── js/
-    ├── globals.js      # Global state (window.App) and settings defaults
-    ├── settings.js     # Settings panel — loads from localStorage, applies to chart
-    ├── drawings.js     # All drawing tools and canvas primitives
-    ├── trading.js      # Paper trading engine
-    └── app.js          # Chart init, CSV loading, replay loop
+    ├── globals.js    # Global state (window.App) and settings defaults
+    ├── i18n.js       # Translations (pt-BR / en-US), t() and applyI18n()
+    ├── drawings.js   # All drawing tools and canvas primitives
+    ├── trading.js    # Paper trading engine
+    ├── settings.js   # Settings panel — loads from localStorage, applies to chart
+    └── app.js        # Chart init, CSV loading, replay loop
+```
+
+**Script load order matters** (reflected in `index.html`):
+```
+globals.js → i18n.js → drawings.js → trading.js → settings.js → app.js
 ```
 
 ---
 
 ## 🚀 Getting Started
 
-This is a **pure static web app** — no build step, no server required.
+This is a **pure static web app** — no build step, no package manager, no server required.
 
-1. Clone or download the repository
-2. Open `index.html` directly in your browser, **or** serve it with any static file server:
+1. **Clone or download** the repository
+2. **Open** `index.html` directly in your browser, or serve it with any static file server:
    ```bash
    # Python (built-in)
    python3 -m http.server 8080
 
-   # Node.js (npx)
+   # Node.js
    npx serve .
    ```
-3. Export M1 data from MetaTrader 5:
-   - Open **History Center** (`Tools → History Center`)
-   - Select your symbol and M1 timeframe
-   - Export as CSV
-4. Load the CSV, set the timezone, pick a date range, and press **Carregar**
-5. Press **▶ Play** or **⏭ +1 Barra** to start the replay
+3. **Export M1 data from MetaTrader 5:**
+   - Open the **Navigator** → right-click your symbol → *Chart Window*
+   - Or use **Tools → History Center**, select symbol + M1, export as CSV
+4. **Load the file:** select the CSV, set the source timezone (default: UTC+2, MT5 winter), pick a date range, and press **Load / Carregar**
+5. Press **▶ Play** or **+1 Bar** to start the replay
+
+---
+
+## ⌨️ Quick Reference
+
+| Action | How |
+|---|---|
+| Play / Pause | Toolbar buttons or change speed while playing |
+| Step one bar | **+1 Bar** button |
+| Zoom | 🔍+ / 🔍− buttons, or scroll wheel on chart |
+| Fit all | **🔍 Fit All** button |
+| Draw | Select a tool → click on chart (V-Line and Ray respond on mousedown) |
+| Edit text | Double-click the orange anchor point of a text object |
+| Move object | Drag from an orange anchor point |
+| Delete object | Select Eraser → click the object |
+| Change language | ⚙️ → Language tab |
+| Reset settings | ⚙️ → Defaults button (reloads the page) |
 
 ---
 
@@ -92,7 +122,7 @@ This is a **pure static web app** — no build step, no server required.
 |---|---|---|
 | [Lightweight Charts™](https://github.com/tradingview/lightweight-charts) | 4.2.1 | Apache 2.0 |
 
-No other runtime dependencies. No npm, no bundler, no framework.
+No npm, no bundler, no framework. The library is loaded from a CDN — for offline use, download it and point the `<script>` tag to the local file.
 
 ---
 
@@ -124,22 +154,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
 
+> Replace `[Your Name or Project Name]` with your own, then create a `LICENSE` file at the root of the repository with this same text.
+
 ### Why MIT?
 
-The only dependency — Lightweight Charts™ — uses the **Apache License 2.0**, which is permissive and fully compatible with MIT. Choosing MIT for your own code means:
+The only dependency — Lightweight Charts™ — is **Apache 2.0**, which is permissive and fully compatible with MIT. Choosing MIT means anyone can use, modify, and redistribute the project (including commercially), with no obligation to open-source derivative works. The only requirement is keeping the copyright notice.
 
-- ✅ Anyone can use, copy, modify, and distribute your project
-- ✅ Commercial use is allowed
-- ✅ No obligation to open-source derivative works
-- ✅ Compatible with Apache 2.0 (you must keep the LightweightCharts license notice)
-- ✅ Widely recognized and understood by developers worldwide
-
-The only requirement is that you **keep the copyright notice** in all copies or distributions (a one-line attribution).
-
-> **Note:** If you want to **ensure all forks and modifications remain open source**, consider **GPL v3** instead. GPL v3 is also compatible with Apache 2.0 in this direction. However, it prevents commercial closed-source use — choose based on your goals.
+If you want to **require all forks and derivatives to remain open source**, use **GPL v3** instead — it is also compatible with Apache 2.0 in this direction.
 
 ---
 
 ## 🙏 Acknowledgements
 
-- Chart rendering powered by [Lightweight Charts™](https://github.com/tradingview/lightweight-charts) © TradingView, Inc. (Apache 2.0)
+Chart rendering powered by [Lightweight Charts™](https://github.com/tradingview/lightweight-charts) © TradingView, Inc. (Apache 2.0).
